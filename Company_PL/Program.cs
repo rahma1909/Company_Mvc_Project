@@ -1,3 +1,9 @@
+using Company_BLL.Interfaces;
+using Company_BLL.Repositories;
+using Company_DAL.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+
 namespace Company_PL
 {
     public class Program
@@ -8,7 +14,12 @@ namespace Company_PL
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();//register  built in services mvc
-
+            builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
+            builder.Services.AddDbContext<CompanyDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
+);
+            });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

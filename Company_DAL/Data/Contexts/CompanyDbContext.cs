@@ -14,7 +14,7 @@ namespace Company_DAL.Data.Contexts
 
 
 
-        public CompanyDbContext():base()
+        public CompanyDbContext(DbContextOptions<CompanyDbContext> options):base(options)
         {
             
         }
@@ -22,10 +22,10 @@ namespace Company_DAL.Data.Contexts
         {
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer("Server=.;Database=CompanyMvcProject;Trusted_Connection=True;TrustServerCertificate=True");
-        }
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlServer("Server=.;Database=CompanyMvcProject;Trusted_Connection=True;TrustServerCertificate=True");
+        //}
 
 
 
