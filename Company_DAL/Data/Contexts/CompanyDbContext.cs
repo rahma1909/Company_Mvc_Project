@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using Company_DAL.Data.Models;
 using Company_DAL.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -30,6 +31,7 @@ namespace Company_DAL.Data.Contexts
 
 
         public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
     }
 }
