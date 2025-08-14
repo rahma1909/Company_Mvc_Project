@@ -8,14 +8,14 @@ using Company_DAL.Models;
 
 namespace Company_BLL.Interfaces
 {
-    public interface IEmployeeRepository
+    public interface IEmployeeRepository:IGenericRepository<Employee>
     {
 
-        IEnumerable<Employee> GetAll();
-        Employee? Get(int id);
+        //IEnumerable<Employee> GetAll();
+        //Employee? Get(int id);
 
-        int Add(Employee employee);
-        int Update(Employee employee);
-        int Delete(Employee employee);
+        //int Add(Employee employee);
+        //int Update(Employee employee);
+        //int Delete(Employee employee);
     }
 }

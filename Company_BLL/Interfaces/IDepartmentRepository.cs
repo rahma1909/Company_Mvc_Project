@@ -7,15 +7,15 @@ using Company_DAL.Models;
 
 namespace Company_BLL.Interfaces
 {
-    public interface IDepartmentRepository
+    public interface IDepartmentRepository :IGenericRepository<Department>
     {
 
-       IEnumerable<Department> GetAll();
-        Department?  Get(int id);
+       //IEnumerable<Department> GetAll();
+       // Department?  Get(int id);
 
-        int Add(Department department);
-        int Update(Department department);
-        int Delete(Department department);
+       // int Add(Department department);
+       // int Update(Department department);
+       // int Delete(Department department);
 
     }
 }
