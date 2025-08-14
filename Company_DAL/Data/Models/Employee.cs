@@ -8,7 +8,7 @@ namespace Company_DAL.Data.Models
 {
     public class Employee:BaseEntity
     {
-  
+       
         public string Name { get; set; }
         public int? Age { get; set; }
         public string Email { get; set; }
