@@ -77,19 +77,24 @@ namespace Company_PL.Controllers
         public IActionResult Edit(int? id)
         {
 
-            //if (id == null)
-            //{
-            //    return BadRequest("invalid id");
-            //}
+            if (id == null) return BadRequest("invalid id");
+            
 
 
-            //var dep = _depRepo.Get(id.Value);
+            var dep = _depRepo.Get(id.Value);
+            if (dep is null)
+                return NotFound($"dep with id {id} is not found");
 
-            //if (dep is null)
-            //    return NotFound($"dep with id {id} is not found");
+
+            var depdto =new CreateDepartmentDTO(){
+                Name=dep.Name,
+                CreateAt=dep.CreateAt,
+                Code=dep.Code,
+            };
+            
 
 
-            return Details(id,"Edit");
+            return View(depdto);
         }
 
 

@@ -52,16 +52,7 @@
                    <td>@dep.Code</td>
                     <td>@dep.Name</td>
                     <td>@dep.CreateAt</td>
-                    <td>
-                        <a class="btn btn-warning" asp-action="Details" asp-route-Id="@dep.Id" asp-controller="Department">Details</a>
-                    </td>
-                    <td>
-                        <a class="btn btn-success" asp-action="Edit" asp-route-Id="@dep.Id" asp-controller="Department">Update</a>
-                    </td>
-
-                    <td>
-                        <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@dep.Id"  asp-controller="Department">Delete</a>
-                    </td>
+                    <partial name="_ButtonsPartialView" model="@dep.Id"></partial>
                     </tr>
                 }
             </tbody>

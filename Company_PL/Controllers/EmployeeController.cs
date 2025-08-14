@@ -81,45 +81,66 @@ namespace Company_PL.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public IActionResult Edit(int? id) //covert from emp to empdto manual mapper
         {
 
-            //if (id == null)
-            //{
-            //    return BadRequest("invalid id");
-            //}
+            if (id == null)
+            {
+                return BadRequest("invalid id");
+            }
+            var emp = _EmpRepo.Get(id.Value);
+            if (emp is null)
+                return NotFound($"emp with id {id} is not found");
 
+            var empdto = new CreateEmployeeDTO()
+            {
+                Name = emp.Name,
+                Address = emp.Address,
+                Age = emp.Age,
+                CreateAt = emp.CreateAt,
+                HiringDate = emp.HiringDate,
+                IsActive = emp.IsActive,
+                IsDeleted = emp.IsDeleted,
+                Email = emp.Email,
+                Salary = emp.Salary,
+                Phone = emp.Phone
+            };
+    
 
-            //var dep = _depRepo.Get(id.Value);
+           
 
-            //if (dep is null)
-            //    return NotFound($"dep with id {id} is not found");
-
-
-            return Details(id, "Edit");
+            return View(empdto);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit([FromRoute] int id, Employee employee)
+        public IActionResult Edit([FromRoute] int id, CreateEmployeeDTO model)
         {
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid) //server side validation
             {
-                if (id == employee.Id)
+                var employee = new Employee()
                 {
-                    var count = _EmpRepo.Update(employee);
+                    Name = model.Name,
+                    Address = model.Address,
+                    Age = model.Age,
+                    CreateAt = model.CreateAt,
+                    HiringDate = model.HiringDate,
+                    IsActive = model.IsActive,
+                    IsDeleted = model.IsDeleted,
+                    Email = model.Email,
+                    Salary = model.Salary,
+                    Phone = model.Phone
+                };
+                var count = _EmpRepo.Update(employee);
 
 
-                    if (count > 0) return RedirectToAction("Index");
+                if (count > 0) return RedirectToAction("Index");
 
-                }
 
             }
-            return View(employee);
-
-
+            return View(model);
         }
 
 

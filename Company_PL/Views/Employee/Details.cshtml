@@ -12,70 +12,7 @@
 
 
 <div >
-    <div>
-        <label class="col-form-label" asp-for="Name">Name</label>
-        <input class="form-control" asp-for=Name readonly />
-    
-    </div>
-
-
-    <div>
-        <label class="col-form-label" asp-for="Age">Age</label>
-        <input class="form-control" asp-for=Age readonly />
-      
-    </div>
-
-
-    <div>
-        <label class="col-form-label" asp-for="Email">Email</label>
-        <input class="form-control" asp-for=Email readonly />
-      
-    </div>
-
-    <div>
-        <label class="col-form-label" asp-for="Address">Address</label>
-        <input class="form-control" asp-for=Address readonly />
-        @* <span asp-validation-for="Address" class="text-danger"></span> *@
-    </div>
-
-    <div>
-        <label class="col-form-label" asp-for="Phone">Phone</label>
-        <input class="form-control" asp-for=Phone readonly />
-      
-    </div>
-
-    <div>
-        <label class="col-form-label" asp-for="Salary">Salary</label>
-        <input class="form-control" asp-for=Salary readonly />
-      
-
-    </div>
-
-
-    <div>
-        <label class="col-form-label" asp-for="IsActive">IsActive</label>
-        <input class="form-check" asp-for=IsActive disabled />
-      
-    </div>
-
-    <div>
-        <label class="col-form-label" asp-for="IsDeleted">IsDeleted</label>
-        <input class="form-check" asp-for=IsDeleted disabled />
-        
-    </div>
-
-
-    <div>
-        <label class="col-form-label" asp-for="HiringDate">HiringDate</label>
-        <input class="form-control" asp-for=HiringDate readonly />
-        
-    </div>
-
-    <div>
-        <label class="col-form-label" asp-for="CreateAt">CreateAt</label>
-        <input class="form-control" asp-for=CreateAt readonly />
-    </div>
-
+    <partial name="EmployeePartialView/_DetailsDeletePartialView"></partial>
     <div class="my-3">
     
       <a class="btn btn-warning" asp-route-Id="@Model.Id" asp-action="Edit">Edit</a>

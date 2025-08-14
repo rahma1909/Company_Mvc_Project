@@ -50,16 +50,7 @@
                     <td>@emp.HiringDate</td>
                     <td>@emp.CreateAt</td>
                  
-                    <td>
-                        <a class="btn btn-warning" asp-action="Details" asp-route-Id="@emp.Id" asp-controller="Employee">Details</a>
-                    </td>
-                    <td>
-                        <a class="btn btn-success" asp-action="Edit" asp-route-Id="@emp.Id" asp-controller="Employee">Update</a>
-                    </td>
-
-                    <td>
-                        <a class="btn btn-danger" asp-action="Delete" asp-route-Id="@emp.Id" asp-controller="Employee">Delete</a>
-                    </td>
+                   <partial name="_ButtonsPartialView"  model="@emp.Id"></partial>
                     </tr>
                 }
             </tbody>
