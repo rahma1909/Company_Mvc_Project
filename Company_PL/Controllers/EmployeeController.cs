@@ -17,7 +17,16 @@ namespace Company_PL.Controllers
 
         public IActionResult Index()
         {
+            ////viewdata
+            ////ViewData["Massege"] = "hello from employee";
 
+            ////viewbag
+            //ViewBag.Massege = "hello";
+            ////more flexable ف حاله انك مش عارف التايب
+            ////compiler will ignore type safety
+
+
+            //tempdata==>send data from req to req
             var employees = _EmpRepo.GetAll();
             return View(employees);
         }
@@ -55,6 +64,7 @@ namespace Company_PL.Controllers
                 var count = _EmpRepo.Add(employee);
                 if (count > 0)
                 {
+                    TempData["massege"] = "employee created successfully";
                     return RedirectToAction("Index");
                 }
             }

@@ -9,6 +9,28 @@
     <br />
 
 
+    @* <div> *@
+    @*     <p> class="alert alert-info" *@
+    @*         @ViewData["Massege"] *@
+    @*     </p> *@
+    @* </div> *@
+
+
+    @* <div> *@
+    @*     <p> *@
+    @*         @* @ViewBag.Massege *@ 
+    @*     </p> *@
+    @* </div> *@
+
+
+@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+{
+    <div class="m-3 alert alert-info">
+        <p>@TempData["Massege"]</p>
+    </div>
+    }
+ 
+
     <a asp-action="Create" class="btn btn-primary" asp-controller="Employee">Create Employee</a>
     <br />
     <br />
