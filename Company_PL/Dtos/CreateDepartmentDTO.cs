@@ -1,6 +1,7 @@
 ﻿
 
 using System.ComponentModel.DataAnnotations;
+using Company_DAL.Models;
 
 namespace Company_PL.Dtos
 {

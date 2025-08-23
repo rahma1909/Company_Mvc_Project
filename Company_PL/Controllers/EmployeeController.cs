@@ -9,14 +9,18 @@ namespace Company_PL.Controllers
     public class EmployeeController : Controller
     {
         private readonly IEmployeeRepository _EmpRepo;
-        public EmployeeController(IEmployeeRepository EmployeeRepository)
+        private readonly IDepartmentRepository _departmentRepository;
+
+        public EmployeeController(IEmployeeRepository EmployeeRepository,IDepartmentRepository departmentRepository)
         {
             _EmpRepo = EmployeeRepository;
+            _departmentRepository = departmentRepository;
         }
 
 
         public IActionResult Index()
         {
+            //transfer extra info from controller (action) to view
             ////viewdata
             ////ViewData["Massege"] = "hello from employee";
 
@@ -36,6 +40,8 @@ namespace Company_PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
+        var dep=    _departmentRepository.GetAll();
+            ViewData["dep"] = dep;
             return View();
         }
 
@@ -58,7 +64,8 @@ namespace Company_PL.Controllers
                    IsDeleted=model.IsDeleted,
                    Email=model.Email,
                    Salary=model.Salary,
-                   Phone = model.Phone
+                   Phone = model.Phone,
+                   DepartmentId=model.DepartmentId
                 };
                 //manual mapping
                 var count = _EmpRepo.Add(employee);
@@ -94,6 +101,9 @@ namespace Company_PL.Controllers
         public IActionResult Edit(int? id) //covert from emp to empdto manual mapper
         {
 
+            var dep = _departmentRepository.GetAll();
+            ViewData["dep"] = dep;
+
             if (id == null)
             {
                 return BadRequest("invalid id");
@@ -104,6 +114,7 @@ namespace Company_PL.Controllers
 
             var empdto = new CreateEmployeeDTO()
             {
+                Id=emp.Id,
                 Name = emp.Name,
                 Address = emp.Address,
                 Age = emp.Age,
@@ -113,7 +124,8 @@ namespace Company_PL.Controllers
                 IsDeleted = emp.IsDeleted,
                 Email = emp.Email,
                 Salary = emp.Salary,
-                Phone = emp.Phone
+                Phone = emp.Phone,
+                DepartmentId=emp.DepartmentId
             };
     
 
@@ -127,11 +139,14 @@ namespace Company_PL.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit([FromRoute] int id, CreateEmployeeDTO model)
         {
+            var dep = _departmentRepository.GetAll();
+            ViewData["dep"] = dep;
 
             if (ModelState.IsValid) //server side validation
             {
                 var employee = new Employee()
                 {
+               Id=model.Id,
                     Name = model.Name,
                     Address = model.Address,
                     Age = model.Age,
@@ -141,7 +156,8 @@ namespace Company_PL.Controllers
                     IsDeleted = model.IsDeleted,
                     Email = model.Email,
                     Salary = model.Salary,
-                    Phone = model.Phone
+                    Phone = model.Phone,
+                    DepartmentId = model.DepartmentId
                 };
                 var count = _EmpRepo.Update(employee);
 

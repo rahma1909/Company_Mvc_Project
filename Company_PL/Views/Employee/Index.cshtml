@@ -23,10 +23,10 @@
     @* </div> *@
 
 
-@if (!string.IsNullOrEmpty(TempData["Message"] as string))
+@if (!string.IsNullOrEmpty(TempData["massege"] as string))
 {
     <div class="m-3 alert alert-info">
-        <p>@TempData["Massege"]</p>
+        <p>@TempData["massege"]</p>
     </div>
     }
  
@@ -51,6 +51,7 @@
                 <th>IsDeleted</th>
                 <th>@Html.DisplayNameFor(e=>e.HiringDate)</th>
                 <th>@Html.DisplayNameFor(e => e.CreateAt)</th>
+                <th>Department Name</th>
                 <th>Details</th>
                 <th>Upadte</th>
                 <th>Delete</th>
@@ -71,7 +72,11 @@
                     <td>@emp.IsDeleted</td>
                     <td>@emp.HiringDate</td>
                     <td>@emp.CreateAt</td>
-                 
+                    @if(emp.Department is null){
+                        <td>No Department</td>
+                    }else{
+                        <td>@emp.Department.Name</td>
+                    }
                    <partial name="_ButtonsPartialView"  model="@emp.Id"></partial>
                     </tr>
                 }

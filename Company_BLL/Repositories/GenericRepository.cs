@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Company_BLL.Interfaces;
 using Company_DAL.Data.Contexts;
 using Company_DAL.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Company_BLL.Repositories
 {
@@ -20,11 +21,19 @@ namespace Company_BLL.Repositories
 
         public IEnumerable<T> GetAll()
         {
+            if (typeof(T) == typeof(Employee))
+            {
+                return( IEnumerable <T> )_context.Employees.Include(e => e.Department).ToList();
+            }
         return   _context.Set<T>().ToList();
         }
 
         public T? Get(int id)
         {
+            if (typeof(T) == typeof(Employee))
+            {
+                return _context.Employees.Include(e => e.Department).FirstOrDefault(e=>e.Id== id) as T;
+            }
             return _context.Set<T>().Find(id);
         }
         public int Add(T model)

@@ -1,10 +1,13 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using Company_DAL.Models;
 
 namespace Company_PL.Dtos
 {
     public class CreateEmployeeDTO
     {
+        public int Id { get; set; }
+
         [Required(ErrorMessage ="name is required")]
         public string Name { get; set; }
        [Range(22,60,ErrorMessage ="age must be in range 22,60")]
@@ -26,5 +29,7 @@ namespace Company_PL.Dtos
         public DateTime HiringDate { get; set; }
         [DisplayName("date of creation")]
         public DateTime CreateAt { get; set; }
+        public int? DepartmentId { get; set; }
+        //public Department? Department { get; set; }
     }
 }
