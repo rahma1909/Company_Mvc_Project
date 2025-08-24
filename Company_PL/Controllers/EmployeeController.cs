@@ -3,6 +3,7 @@ using Company_DAL.Data.Models;
 using Company_DAL.Models;
 using Company_PL.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Company_PL.Controllers
 {
@@ -18,8 +19,19 @@ namespace Company_PL.Controllers
         }
 
 
-        public IActionResult Index()
+        public IActionResult Index(string? SearchInput)
         {
+
+            IEnumerable<Employee> employees;
+
+            if (string.IsNullOrEmpty(SearchInput))
+            {
+               employees = _EmpRepo.GetAll();
+            }
+            else
+            {
+                 employees = _EmpRepo.GetByName(SearchInput);
+            }
             //transfer extra info from controller (action) to view
             ////viewdata
             ////ViewData["Massege"] = "hello from employee";
@@ -31,7 +43,7 @@ namespace Company_PL.Controllers
 
 
             //tempdata==>send data from req to req
-            var employees = _EmpRepo.GetAll();
+          
             return View(employees);
         }
 
