@@ -6,7 +6,7 @@ namespace Company_PL.Dtos
 {
     public class CreateEmployeeDTO
     {
-        public int Id { get; set; }
+        
 
         [Required(ErrorMessage ="name is required")]
         public string Name { get; set; }
@@ -31,5 +31,7 @@ namespace Company_PL.Dtos
         public DateTime CreateAt { get; set; }
         public int? DepartmentId { get; set; }
         //public Department? Department { get; set; }
+
+        public string? DepartmentName { get; set; }
     }
 }

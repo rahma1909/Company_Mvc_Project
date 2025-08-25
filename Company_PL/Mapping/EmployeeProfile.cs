@@ -9,10 +9,11 @@ namespace Company_PL.Mapping
 
         public EmployeeProfile()
         {
-            //CreateMap<CreateEmployeeDTO, Employee>();
-            //CreateMap<Employee, CreateEmployeeDTO>();
+            CreateMap<CreateEmployeeDTO, Employee>();
+            CreateMap<Employee, CreateEmployeeDTO>()
+                .ForMember(d => d.DepartmentName, o => o.MapFrom(s => s.Department));
 
-            CreateMap<Employee, CreateEmployeeDTO>().ReverseMap();
+            //CreateMap<Employee, CreateEmployeeDTO>().ReverseMap();
         }
     }
 }

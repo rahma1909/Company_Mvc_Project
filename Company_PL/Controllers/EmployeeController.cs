@@ -180,7 +180,7 @@ namespace Company_PL.Controllers
                 //};
 
                 var employee = _mapper.Map<Employee>(model);
-
+                employee.Id = id;
                 var count = _EmpRepo.Update(employee);
 
 
@@ -241,22 +241,24 @@ namespace Company_PL.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete([FromRoute] int id, Employee employee)
+        public IActionResult Delete([FromRoute] int id, CreateEmployeeDTO dto)
         {
 
             if (ModelState.IsValid)
             {
-                if (id == employee.Id)
-                {
+                
+                
+                    var employee = _mapper.Map<Employee>(dto);
+                    employee.Id = id;
                     var count = _EmpRepo.Delete(employee);
 
 
                     if (count > 0) return RedirectToAction("Index");
 
-                }
+              
 
             }
-            return View(employee);
+            return View(dto);
 
 
         }
