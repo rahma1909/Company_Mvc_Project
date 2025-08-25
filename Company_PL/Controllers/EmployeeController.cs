@@ -224,19 +224,19 @@ namespace Company_PL.Controllers
         public IActionResult Delete(int? id)
         {
 
-            if (id == null)
-            {
-                return BadRequest("invalid id");
-            }
+            //if (id == null)
+            //{
+            //    return BadRequest("invalid id");
+            //}
 
 
-            var employee = _EmpRepo.Get(id.Value);
+            //var dep = _depRepo.Get(id.Value);
 
-            if (employee is null)
-                return NotFound($"dep with id {id} is not found");
+            //if (dep is null)
+            //    return NotFound($"dep with id {id} is not found");
 
 
-            return View(employee);
+            return Details(id, "Delete");
         }
 
         [HttpPost]
