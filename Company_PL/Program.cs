@@ -1,6 +1,8 @@
 using Company_BLL.Interfaces;
 using Company_BLL.Repositories;
 using Company_DAL.Data.Contexts;
+using Company_DAL.Data.Models;
+using Company_PL.Mapping;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -21,6 +23,8 @@ namespace Company_PL
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")
 );
             });
+            builder.Services.AddAutoMapper(m=>m.AddProfile(new EmployeeProfile()));
+           
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

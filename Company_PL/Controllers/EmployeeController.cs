@@ -1,4 +1,5 @@
-﻿using Company_BLL.Interfaces;
+﻿using AutoMapper;
+using Company_BLL.Interfaces;
 using Company_DAL.Data.Models;
 using Company_DAL.Models;
 using Company_PL.Dtos;
@@ -11,11 +12,15 @@ namespace Company_PL.Controllers
     {
         private readonly IEmployeeRepository _EmpRepo;
         private readonly IDepartmentRepository _departmentRepository;
+        private readonly IMapper _mapper;
 
-        public EmployeeController(IEmployeeRepository EmployeeRepository,IDepartmentRepository departmentRepository)
+        public EmployeeController(
+            IEmployeeRepository EmployeeRepository,
+            IDepartmentRepository departmentRepository,IMapper mapper)
         {
             _EmpRepo = EmployeeRepository;
             _departmentRepository = departmentRepository;
+          _mapper = mapper;
         }
 
 
@@ -65,20 +70,22 @@ namespace Company_PL.Controllers
         {
             if (ModelState.IsValid) //server side validation
             {
-                var employee = new Employee()
-                {
-                   Name=model.Name,
-                   Address=model.Address,
-                   Age=model.Age,
-                   CreateAt=model.CreateAt,
-                   HiringDate=model.HiringDate,
-                   IsActive=model.IsActive,
-                   IsDeleted=model.IsDeleted,
-                   Email=model.Email,
-                   Salary=model.Salary,
-                   Phone = model.Phone,
-                   DepartmentId=model.DepartmentId
-                };
+                //manual mapping
+                //var employee = new Employee()
+                //{
+                //   Name=model.Name,
+                //   Address=model.Address,
+                //   Age=model.Age,
+                //   CreateAt=model.CreateAt,
+                //   HiringDate=model.HiringDate,
+                //   IsActive=model.IsActive,
+                //   IsDeleted=model.IsDeleted,
+                //   Email=model.Email,
+                //   Salary=model.Salary,
+                //   Phone = model.Phone,
+                //   DepartmentId=model.DepartmentId
+                //};
+           var employee=     _mapper.Map<Employee>(model);
                 //manual mapping
                 var count = _EmpRepo.Add(employee);
                 if (count > 0)
@@ -124,23 +131,23 @@ namespace Company_PL.Controllers
             if (emp is null)
                 return NotFound($"emp with id {id} is not found");
 
-            var empdto = new CreateEmployeeDTO()
-            {
-                Id=emp.Id,
-                Name = emp.Name,
-                Address = emp.Address,
-                Age = emp.Age,
-                CreateAt = emp.CreateAt,
-                HiringDate = emp.HiringDate,
-                IsActive = emp.IsActive,
-                IsDeleted = emp.IsDeleted,
-                Email = emp.Email,
-                Salary = emp.Salary,
-                Phone = emp.Phone,
-                DepartmentId=emp.DepartmentId
-            };
-    
-
+            //var empdto = new CreateEmployeeDTO()
+            //{
+            //    Id=emp.Id,
+            //    Name = emp.Name,
+            //    Address = emp.Address,
+            //    Age = emp.Age,
+            //    CreateAt = emp.CreateAt,
+            //    HiringDate = emp.HiringDate,
+            //    IsActive = emp.IsActive,
+            //    IsDeleted = emp.IsDeleted,
+            //    Email = emp.Email,
+            //    Salary = emp.Salary,
+            //    Phone = emp.Phone,
+            //    DepartmentId=emp.DepartmentId
+            //};
+             
+            var empdto = _mapper.Map<CreateEmployeeDTO>(emp);
            
 
             return View(empdto);
@@ -156,21 +163,24 @@ namespace Company_PL.Controllers
 
             if (ModelState.IsValid) //server side validation
             {
-                var employee = new Employee()
-                {
-               Id=model.Id,
-                    Name = model.Name,
-                    Address = model.Address,
-                    Age = model.Age,
-                    CreateAt = model.CreateAt,
-                    HiringDate = model.HiringDate,
-                    IsActive = model.IsActive,
-                    IsDeleted = model.IsDeleted,
-                    Email = model.Email,
-                    Salary = model.Salary,
-                    Phone = model.Phone,
-                    DepartmentId = model.DepartmentId
-                };
+                //var employee = new Employee()
+                //{
+                //    Id=model.Id,
+                //    Name = model.Name,
+                //    Address = model.Address,
+                //    Age = model.Age,
+                //    CreateAt = model.CreateAt,
+                //    HiringDate = model.HiringDate,
+                //    IsActive = model.IsActive,
+                //    IsDeleted = model.IsDeleted,
+                //    Email = model.Email,
+                //    Salary = model.Salary,
+                //    Phone = model.Phone,
+                //    DepartmentId = model.DepartmentId
+                //};
+
+                var employee = _mapper.Map<Employee>(model);
+
                 var count = _EmpRepo.Update(employee);
 
 
@@ -214,19 +224,19 @@ namespace Company_PL.Controllers
         public IActionResult Delete(int? id)
         {
 
-            //if (id == null)
-            //{
-            //    return BadRequest("invalid id");
-            //}
+            if (id == null)
+            {
+                return BadRequest("invalid id");
+            }
 
 
-            //var dep = _depRepo.Get(id.Value);
+            var employee = _EmpRepo.Get(id.Value);
 
-            //if (dep is null)
-            //    return NotFound($"dep with id {id} is not found");
+            if (employee is null)
+                return NotFound($"dep with id {id} is not found");
 
 
-            return Details(id, "Delete");
+            return View(employee);
         }
 
         [HttpPost]
