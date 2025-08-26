@@ -1,0 +1,199 @@
+﻿using Company_BLL.Interfaces;
+using Company_BLL.Repositories;
+using Company_DAL.Models;
+using Company_PL.Dtos;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Company_PL.Controllers
+{
+    public class DepartmentController : Controller
+    {
+        //private readonly IDepartmentRepository _depRepo;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public DepartmentController(IUnitOfWork unitOfWork)
+        {
+            //_depRepo = departmentRepository;
+           _unitOfWork = unitOfWork;
+        }
+
+
+        public IActionResult Index()
+        {
+
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
+            return View(departments);
+        }
+
+
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+
+
+
+        [HttpPost]
+        public IActionResult Create(CreateDepartmentDTO model)
+        {
+            if (ModelState.IsValid) //server side validation
+            {
+                var department = new Department()
+                {
+                    Code=model.Code,
+                    Name = model.Name,
+                    CreateAt = model.CreateAt
+                };
+                //manual mapping
+             _unitOfWork.DepartmentRepository.Add(department);
+                var count = _unitOfWork.complete();
+                if (count > 0)
+                {
+                    return RedirectToAction("Index");
+                }
+            }
+            return View(model);
+        }
+
+
+        [HttpGet]
+        public IActionResult Details(int? id,string ViewName="Details")
+        {
+            if (id == null)
+            {
+                return BadRequest("invalid id");
+            }
+   
+            
+            var dep= _unitOfWork.DepartmentRepository.Get(id.Value);
+
+            if(dep is null)
+             return NotFound($"dep with id {id} is not found");
+
+
+            return View(ViewName,dep);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+
+            if (id == null) return BadRequest("invalid id");
+            
+
+
+            var dep = _unitOfWork.DepartmentRepository.Get(id.Value);
+            if (dep is null)
+                return NotFound($"dep with id {id} is not found");
+
+
+            var depdto =new CreateDepartmentDTO(){
+                Name=dep.Name,
+                CreateAt=dep.CreateAt,
+                Code=dep.Code,
+            };
+            
+
+
+            return View(depdto);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit([FromRoute] int id, Department department)
+        {
+
+            if (ModelState.IsValid)
+            {
+                if (id == department.Id)
+                {
+                  _unitOfWork.DepartmentRepository.Update(department);
+
+                    var count = _unitOfWork.complete();
+                    if (count > 0) return RedirectToAction("Index");
+
+                }
+
+            }
+            return View(department);
+
+
+        }
+
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken] //with any post action
+        //public IActionResult Edit([FromRoute] int id, DepartmentEditDTO DTODepEdit)
+        //{
+
+        //    if (ModelState.IsValid)
+        //    {
+        //        var department = new Department()
+        //        {
+        //            Id = id,
+        //            Code=DTODepEdit.Code,
+        //            Name=DTODepEdit.Name,
+        //            CreateAt=DTODepEdit.CreateAt
+        //        };
+
+        //            var count = _depRepo.Update(department);
+
+
+        //            if (count > 0) return RedirectToAction("Index");
+
+
+
+        //    }
+        //    return View(DTODepEdit);
+
+
+        //}
+
+        [HttpGet]
+        public IActionResult Delete(int? id)
+        {
+
+            //if (id == null)
+            //{
+            //    return BadRequest("invalid id");
+            //}
+
+
+            //var dep = _depRepo.Get(id.Value);
+
+            //if (dep is null)
+            //    return NotFound($"dep with id {id} is not found");
+
+
+            return Details(id,"Delete");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete([FromRoute] int id, Department department)
+        {
+
+            if (ModelState.IsValid)
+            {
+                if (id == department.Id)
+                {
+                     _unitOfWork.DepartmentRepository.Delete(department);
+
+                    var count = _unitOfWork.complete();
+                    if (count > 0) return RedirectToAction("Index");
+
+                }
+
+            }
+            return View(department);
+
+
+        }
+
+
+    }
+}

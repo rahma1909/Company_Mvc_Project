@@ -1,0 +1,20 @@
+﻿@model CreateDepartmentDTO
+
+
+<div class="my-3">
+    <label class="col-form-label" asp-for="Code">Code</label>
+    <input class="form-control" asp-for=Code />
+    <span asp-validation-for="Code" class="text-danger"></span>
+</div>
+
+<div>
+    <label class="col-form-label" asp-for="Name">Name</label>
+    <input class="form-control" asp-for=Name />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+
+<div>
+    <label class="col-form-label" asp-for="CreateAt">CreateAt</label>
+    <input class="form-control" asp-for=CreateAt />
+    <span asp-validation-for="CreateAt" class="text-danger"></span>
+</div>
