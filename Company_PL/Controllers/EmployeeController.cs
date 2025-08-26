@@ -10,17 +10,21 @@ namespace Company_PL.Controllers
 {
     public class EmployeeController : Controller
     {
-        private readonly IEmployeeRepository _EmpRepo;
-        private readonly IDepartmentRepository _departmentRepository;
+        //private readonly IEmployeeRepository _EmpRepo;
+        //private readonly IDepartmentRepository _departmentRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
         public EmployeeController(
-            IEmployeeRepository EmployeeRepository,
-            IDepartmentRepository departmentRepository,IMapper mapper)
+            //IEmployeeRepository EmployeeRepository,
+            //IDepartmentRepository departmentRepository,
+            IUnitOfWork UnitOfWork,
+            IMapper mapper)
         {
-            _EmpRepo = EmployeeRepository;
-            _departmentRepository = departmentRepository;
-          _mapper = mapper;
+            _unitOfWork = UnitOfWork;
+            //_EmpRepo = EmployeeRepository;
+            //_departmentRepository = departmentRepository;
+            _mapper = mapper;
         }
 
 
@@ -31,11 +35,11 @@ namespace Company_PL.Controllers
 
             if (string.IsNullOrEmpty(SearchInput))
             {
-               employees = _EmpRepo.GetAll();
+               employees = _unitOfWork.EmployeeRepository.GetAll();
             }
             else
             {
-                 employees = _EmpRepo.GetByName(SearchInput);
+                 employees = _unitOfWork.EmployeeRepository.GetByName(SearchInput);
             }
             //transfer extra info from controller (action) to view
             ////viewdata
@@ -57,7 +61,7 @@ namespace Company_PL.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-        var dep=    _departmentRepository.GetAll();
+        var dep= _unitOfWork.DepartmentRepository.GetAll();
             ViewData["dep"] = dep;
             return View();
         }
@@ -87,7 +91,8 @@ namespace Company_PL.Controllers
                 //};
            var employee=     _mapper.Map<Employee>(model);
                 //manual mapping
-                var count = _EmpRepo.Add(employee);
+                _unitOfWork.EmployeeRepository.Add(employee);
+           var count=     _unitOfWork.complete();
                 if (count > 0)
                 {
                     TempData["massege"] = "employee created successfully";
@@ -107,7 +112,7 @@ namespace Company_PL.Controllers
             }
 
 
-            var emp = _EmpRepo.Get(id.Value);
+            var emp = _unitOfWork.EmployeeRepository.Get(id.Value);
 
             if (emp is null)
                 return NotFound($"emp with id {id} is not found");
@@ -120,14 +125,14 @@ namespace Company_PL.Controllers
         public IActionResult Edit(int? id) //covert from emp to empdto manual mapper
         {
 
-            var dep = _departmentRepository.GetAll();
+            var dep = _unitOfWork.DepartmentRepository.GetAll();
             ViewData["dep"] = dep;
 
             if (id == null)
             {
                 return BadRequest("invalid id");
             }
-            var emp = _EmpRepo.Get(id.Value);
+            var emp = _unitOfWork.EmployeeRepository.Get(id.Value);
             if (emp is null)
                 return NotFound($"emp with id {id} is not found");
 
@@ -158,7 +163,7 @@ namespace Company_PL.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit([FromRoute] int id, CreateEmployeeDTO model)
         {
-            var dep = _departmentRepository.GetAll();
+            var dep = _unitOfWork.DepartmentRepository.GetAll();
             ViewData["dep"] = dep;
 
             if (ModelState.IsValid) //server side validation
@@ -181,8 +186,8 @@ namespace Company_PL.Controllers
 
                 var employee = _mapper.Map<Employee>(model);
                 employee.Id = id;
-                var count = _EmpRepo.Update(employee);
-
+         _unitOfWork.EmployeeRepository.Update(employee);
+                var count = _unitOfWork.complete();
 
                 if (count > 0) return RedirectToAction("Index");
 
@@ -250,10 +255,10 @@ namespace Company_PL.Controllers
                 
                     var employee = _mapper.Map<Employee>(dto);
                     employee.Id = id;
-                    var count = _EmpRepo.Delete(employee);
+                   _unitOfWork.EmployeeRepository.Delete(employee);
 
-
-                    if (count > 0) return RedirectToAction("Index");
+                var count = _unitOfWork.complete();
+                if (count > 0) return RedirectToAction("Index");
 
               
 

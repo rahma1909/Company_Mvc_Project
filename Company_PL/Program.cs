@@ -1,3 +1,4 @@
+using Company_BLL;
 using Company_BLL.Interfaces;
 using Company_BLL.Repositories;
 using Company_DAL.Data.Contexts;
@@ -18,6 +19,7 @@ namespace Company_PL
             builder.Services.AddControllersWithViews();//register  built in services mvc
             builder.Services.AddScoped<IDepartmentRepository,DepartmentRepository>();
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddDbContext<CompanyDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")

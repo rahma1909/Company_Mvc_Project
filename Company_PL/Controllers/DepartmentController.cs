@@ -8,17 +8,20 @@ namespace Company_PL.Controllers
 {
     public class DepartmentController : Controller
     {
-        private readonly IDepartmentRepository _depRepo;
-        public DepartmentController(IDepartmentRepository departmentRepository)
+        //private readonly IDepartmentRepository _depRepo;
+        private readonly IUnitOfWork _unitOfWork;
+
+        public DepartmentController(IUnitOfWork unitOfWork)
         {
-            _depRepo = departmentRepository;
+            //_depRepo = departmentRepository;
+           _unitOfWork = unitOfWork;
         }
 
 
         public IActionResult Index()
         {
 
-            var departments = _depRepo.GetAll();
+            var departments = _unitOfWork.DepartmentRepository.GetAll();
             return View(departments);
         }
 
@@ -45,7 +48,8 @@ namespace Company_PL.Controllers
                     CreateAt = model.CreateAt
                 };
                 //manual mapping
-              var count=  _depRepo.Add(department);
+             _unitOfWork.DepartmentRepository.Add(department);
+                var count = _unitOfWork.complete();
                 if (count > 0)
                 {
                     return RedirectToAction("Index");
@@ -64,7 +68,7 @@ namespace Company_PL.Controllers
             }
    
             
-            var dep=  _depRepo.Get(id.Value);
+            var dep= _unitOfWork.DepartmentRepository.Get(id.Value);
 
             if(dep is null)
              return NotFound($"dep with id {id} is not found");
@@ -81,7 +85,7 @@ namespace Company_PL.Controllers
             
 
 
-            var dep = _depRepo.Get(id.Value);
+            var dep = _unitOfWork.DepartmentRepository.Get(id.Value);
             if (dep is null)
                 return NotFound($"dep with id {id} is not found");
 
@@ -107,9 +111,9 @@ namespace Company_PL.Controllers
             {
                 if (id == department.Id)
                 {
-                    var count = _depRepo.Update(department);
+                  _unitOfWork.DepartmentRepository.Update(department);
 
-
+                    var count = _unitOfWork.complete();
                     if (count > 0) return RedirectToAction("Index");
 
                 }
@@ -177,9 +181,9 @@ namespace Company_PL.Controllers
             {
                 if (id == department.Id)
                 {
-                    var count = _depRepo.Delete(department);
+                     _unitOfWork.DepartmentRepository.Delete(department);
 
-
+                    var count = _unitOfWork.complete();
                     if (count > 0) return RedirectToAction("Index");
 
                 }
