@@ -33,5 +33,7 @@ namespace Company_PL.Dtos
         //public Department? Department { get; set; }
 
         public string? DepartmentName { get; set; }
+        public string? ImageName { get; set; }
+        public IFormFile? Image { get; set; }
     }
 }

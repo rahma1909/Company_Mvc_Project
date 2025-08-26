@@ -74,3 +74,9 @@
      <option value="@null">__select option__</option>
   </select>
 </div>
+
+<div>
+    <label class="col-form-label" asp-for="Image">Image</label>
+    <input class="form-control" type="file" asp-for=Image />
+    <span asp-validation-for="Image" class="text-danger"></span>
+</div>

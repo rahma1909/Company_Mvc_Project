@@ -3,6 +3,7 @@ using Company_BLL.Interfaces;
 using Company_DAL.Data.Models;
 using Company_DAL.Models;
 using Company_PL.Dtos;
+using Company_PL.helpers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -70,10 +71,17 @@ namespace Company_PL.Controllers
 
 
         [HttpPost]
+        
         public IActionResult Create(CreateEmployeeDTO model)
         {
+            
+         
             if (ModelState.IsValid) //server side validation
             {
+                if (model.Image is not null)
+                {
+                    model.ImageName = DocumentSettings.UploadFile(model.Image, "images");
+                }
                 //manual mapping
                 //var employee = new Employee()
                 //{
@@ -89,7 +97,7 @@ namespace Company_PL.Controllers
                 //   Phone = model.Phone,
                 //   DepartmentId=model.DepartmentId
                 //};
-           var employee=     _mapper.Map<Employee>(model);
+                var employee=     _mapper.Map<Employee>(model);
                 //manual mapping
                 _unitOfWork.EmployeeRepository.Add(employee);
            var count=     _unitOfWork.complete();
