@@ -25,14 +25,15 @@ namespace Company_BLL
          
         }
 
-        public int complete()
+        public async Task< int> completeAsync()
         {
-            return _context.SaveChanges();
+            return await _context.SaveChangesAsync();
         }
 
-        public void Dispose()
+     
+        public async ValueTask DisposeAsync()
         {
-            _context.Dispose();
+           await _context.DisposeAsync();
         }
     }
 }
