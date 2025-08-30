@@ -176,6 +176,17 @@ namespace Company_PL.Controllers
 
             if (ModelState.IsValid) //server side validation
             {
+                if(model.ImageName is not null && model.Image is not null)
+                {
+                    DocumentSettings.DeleteFile(model.ImageName, "images");
+
+                }
+
+        if(model.Image is not null)
+                {
+             model.ImageName=       DocumentSettings.UploadFile(model.Image, "images");
+                }
+
                 //var employee = new Employee()
                 //{
                 //    Id=model.Id,
@@ -266,8 +277,15 @@ namespace Company_PL.Controllers
                    _unitOfWork.EmployeeRepository.Delete(employee);
 
                 var count = _unitOfWork.complete();
-                if (count > 0) return RedirectToAction("Index");
-
+                if (count > 0)
+                {
+                    if(dto.ImageName is not null)
+                    {
+                        DocumentSettings.DeleteFile(dto.ImageName, "images");
+                    }
+                   
+                    return RedirectToAction("Index");
+                }
               
 
             }
