@@ -4,11 +4,13 @@ using Company_DAL.Data.Models;
 using Company_DAL.Models;
 using Company_PL.Dtos;
 using Company_PL.helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Company_PL.Controllers
 {
+    [Authorize]
     public class EmployeeController : Controller
     {
         //private readonly IEmployeeRepository _EmpRepo;
