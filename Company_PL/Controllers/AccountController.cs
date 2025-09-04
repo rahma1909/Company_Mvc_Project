@@ -9,10 +9,12 @@ namespace Company_PL.Controllers
     public class AccountController:Controller
     {
         private readonly UserManager<AppUser> _appuser;
+        private readonly SignInManager<AppUser> _signinmanager;
 
-        public AccountController(UserManager<AppUser> appuser)
+        public AccountController(UserManager<AppUser> appuser,SignInManager<AppUser> Signinmanager)
         {
             _appuser = appuser;
+            _signinmanager = Signinmanager;
         }
 
 
@@ -79,6 +81,51 @@ namespace Company_PL.Controllers
 
 
         #region singin
+        [HttpGet]
+
+        public IActionResult SignIn()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+
+        public async Task< IActionResult> SignIn(SignInDto model)
+        {
+
+            if (ModelState.IsValid)
+            {
+           var user=   await  _appuser.FindByEmailAsync(model.Email);
+
+                if(user is not null)
+                {
+                    var flag = await _appuser.CheckPasswordAsync(user, model.Password);
+
+                    if (flag)
+                    {
+                        //sign in
+
+
+
+               var res=    await     _signinmanager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+                        if (res.Succeeded)
+                        {
+                            //redierct to home
+                            return RedirectToAction(nameof(HomeController.Index), "Home");
+                        }
+                      
+                    }
+                }
+                ModelState.AddModelError("", "invalide login!!");
+            }
+
+
+
+            return View(model);
+        }
+
+
 
         #endregion
 

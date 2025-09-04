@@ -29,7 +29,12 @@ namespace Company_PL
 );
             });
             builder.Services.AddAutoMapper(m=>m.AddProfile(new EmployeeProfile()));
+
+
+            builder.Services.ConfigureApplicationCookie(config =>
+            config.LoginPath="/Account/SignIn"
            
+            );
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -44,7 +49,8 @@ namespace Company_PL
             app.UseStaticFiles();
 
             app.UseRouting();
-
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
