@@ -133,6 +133,15 @@ namespace Company_PL.Controllers
 
         #region singout
 
+        [HttpGet]
+
+        public new async Task<IActionResult>  SignOut()
+        {
+           await _signinmanager.SignOutAsync();
+            return RedirectToAction(nameof(SignIn));
+        }
+
+
         #endregion
     }
 }
