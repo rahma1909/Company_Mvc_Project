@@ -148,7 +148,7 @@ namespace Company_PL.Controllers
         #endregion
 
 
-        #region Forget Password
+      #region Forget Password
         [HttpGet]
 
         public IActionResult ForgetPassword()
@@ -198,6 +198,54 @@ Body=url
         {
             return View();
         }
+
+
+        #endregion
+
+
+        #region resetPassword
+
+        [HttpGet]
+
+
+        public IActionResult ResetPassword(string email,string token)
+        {
+            TempData["email"] = email;
+            TempData["token"] = token;
+            return View();   
+        
+        }
+
+
+        [HttpPost ]
+
+
+        public async Task<IActionResult>  ResetPassword(ResetPasswordDto model)
+        {
+            var email = TempData["email"] as string;
+            var token = TempData["token"] as string;
+            if (ModelState.IsValid)
+            {
+                var user = await _appuser.FindByEmailAsync(email);
+                if(user is not null)
+                {
+                    var res = await _appuser.ResetPasswordAsync(user, token, model.Password);
+                    if (res.Succeeded){
+
+                        return RedirectToAction("SignIn");
+
+
+                    }
+                    {
+                        
+                    }
+                }
+                ModelState.AddModelError("", "invalid operation of reset password");
+            }
+            return View();
+
+        }
+
 
 
         #endregion
