@@ -1,18 +1,22 @@
 ﻿using Company_DAL.Data.Models;
 using Company_PL.Dtos;
 using Company_PL.helpers;
+using Company_PL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Company_PL.Controllers
 {
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _Rolemanagmer;
+        private readonly UserManager<AppUser> _usermanager;
 
-        public RoleController(RoleManager<IdentityRole> Rolemanagmer)
+        public RoleController(RoleManager<IdentityRole> Rolemanagmer,UserManager<AppUser> usermanager)
         {
             _Rolemanagmer = Rolemanagmer;
+            _usermanager = usermanager;
         }
 
 
@@ -205,5 +209,44 @@ namespace Company_PL.Controllers
 
 
         }
+        [HttpGet]
+        public async Task<IActionResult>  AddOrRemoveUser(string roleid)
+        {
+            var role= await _Rolemanagmer.FindByIdAsync(roleid);
+            if(role is null)
+            {
+                return NotFound();
+            }
+
+            var usersInRole = new List<UsersInRoleViewModel>();
+            var users = await _usermanager.Users.ToListAsync();
+
+            foreach (var user in users)
+            {
+                var userInRole = new UsersInRoleViewModel()
+                {
+                    UserId=user.Id,
+                    UserName=user.UserName,
+                 
+                };
+                if ( await _usermanager.IsInRoleAsync(user, role.Name))
+                {
+                    userInRole.IsSelected = true;
+
+
+                }
+                else
+                {
+                    userInRole.IsSelected = false;
+                }
+
+
+                usersInRole.Add(userInRole);
+            }
+            return View();
+        }
+
+        
+
     }
 }
