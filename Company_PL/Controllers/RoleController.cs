@@ -13,7 +13,7 @@ namespace Company_PL.Controllers
         private readonly RoleManager<IdentityRole> _Rolemanagmer;
         private readonly UserManager<AppUser> _usermanager;
 
-        public RoleController(RoleManager<IdentityRole> Rolemanagmer,UserManager<AppUser> usermanager)
+        public RoleController(RoleManager<IdentityRole> Rolemanagmer, UserManager<AppUser> usermanager)
         {
             _Rolemanagmer = Rolemanagmer;
             _usermanager = usermanager;
@@ -30,8 +30,8 @@ namespace Company_PL.Controllers
                 users = _Rolemanagmer.Roles.Select(u => new RoleToReturnDto()
                 {
                     Id = u.Id,
-          Name=u.Name,
-                    
+                    Name = u.Name,
+
 
                 });
             }
@@ -53,7 +53,7 @@ namespace Company_PL.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-    
+
             return View();
         }
 
@@ -67,12 +67,12 @@ namespace Company_PL.Controllers
             {
 
 
-                var role=await _Rolemanagmer.FindByNameAsync(model.Name);
-                if(role is null)
+                var role = await _Rolemanagmer.FindByNameAsync(model.Name);
+                if (role is null)
                 {
                     role = new IdentityRole()
                     {
-                        Name=model.Name
+                        Name = model.Name
                     };
 
 
@@ -84,7 +84,7 @@ namespace Company_PL.Controllers
 
                     }
                 }
-             
+
             }
             return View(model);
         }
@@ -106,7 +106,7 @@ namespace Company_PL.Controllers
 
             var dto = new RoleToReturnDto()
             {
-                Id =role.Id,
+                Id = role.Id,
                 Name = role.Name,
 
             };
@@ -137,12 +137,12 @@ namespace Company_PL.Controllers
 
 
                 var role = await _Rolemanagmer.FindByIdAsync(id);
-                if (role  is  null)
+                if (role is null)
                 {
                     return BadRequest("invalid operation");
                 }
                 var roleres = await _Rolemanagmer.FindByNameAsync(model.Name);
-                if (roleres is  null)
+                if (roleres is null)
                 {
                     role.Name = model.Name;
                     var res = await _Rolemanagmer.UpdateAsync(role);
@@ -153,8 +153,8 @@ namespace Company_PL.Controllers
                 }
                 ModelState.AddModelError("", "invalid operatin");
             }
-              
-              
+
+
             return View(model);
         }
 
@@ -188,14 +188,14 @@ namespace Company_PL.Controllers
                 {
                     return BadRequest("invalid operation");
                 }
-              
-                    role.Name = model.Name;
-                    var res = await _Rolemanagmer.DeleteAsync(role);
-                    if (res.Succeeded)
-                    {
-                        return RedirectToAction("Index");
-                    }
-                
+
+                role.Name = model.Name;
+                var res = await _Rolemanagmer.DeleteAsync(role);
+                if (res.Succeeded)
+                {
+                    return RedirectToAction("Index");
+                }
+
                 ModelState.AddModelError("", "invalid operatin");
             }
 
@@ -209,11 +209,13 @@ namespace Company_PL.Controllers
 
 
         }
+
+
         [HttpGet]
-        public async Task<IActionResult>  AddOrRemoveUser(string roleid)
+        public async Task<IActionResult> AddOrRemoveUser(string roleid)
         {
-            var role= await _Rolemanagmer.FindByIdAsync(roleid);
-            if(role is null)
+            var role = await _Rolemanagmer.FindByIdAsync(roleid);
+            if (role is null)
             {
                 return NotFound();
             }
@@ -225,11 +227,11 @@ namespace Company_PL.Controllers
             {
                 var userInRole = new UsersInRoleViewModel()
                 {
-                    UserId=user.Id,
-                    UserName=user.UserName,
-                 
+                    UserId = user.Id,
+                    UserName = user.UserName,
+
                 };
-                if ( await _usermanager.IsInRoleAsync(user, role.Name))
+                if (await _usermanager.IsInRoleAsync(user, role.Name))
                 {
                     userInRole.IsSelected = true;
 
@@ -243,10 +245,47 @@ namespace Company_PL.Controllers
 
                 usersInRole.Add(userInRole);
             }
-            return View();
+            ViewData["roleid"] = roleid;
+            return View(usersInRole);
         }
+
+        [ValidateAntiForgeryToken]
+        [HttpPost]
+        public async Task<IActionResult> AddOrRemoveUser(string roleid, List<UsersInRoleViewModel> users)
+        {
+
+
+            var role = await _Rolemanagmer.FindByIdAsync(roleid);
+            if (role is null)
+            {
+                return NotFound();
+            }
+
+   
+
+            if (ModelState.IsValid)
+            {
+                foreach (var user in users)
+                {
+                    var appuser = await _usermanager.FindByIdAsync(user.UserId);
+                    if (appuser is not null)
+                    {
+                        if (user.IsSelected == true && !await _usermanager.IsInRoleAsync(appuser, role.Name))
+                        {
+                            await _usermanager.AddToRoleAsync(appuser, role.Name);
+                        } else if (user.IsSelected == false && await _usermanager.IsInRoleAsync(appuser, role.Name))
+                            await _usermanager.RemoveFromRoleAsync(appuser, role.Name);
+                    }
+                }
+
+
+                return RedirectToAction(nameof(Edit),new {id=roleid});
+            }
 
         
 
+         return View(users);
     }
 }
+}
+
